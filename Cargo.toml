@@ -1,0 +1,29 @@
+[package]
+name = "imenchmark"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+fimg = { version = "0.4.23", features = [
+    "text",
+    "blur",
+    "scale",
+], git = "https://github.com/bend-n/fimg" }
+iai = { git = "https://github.com/bend-n/iai", version = "0.1.1" }
+image = { version = "0.24.7", default-features = false, features = ["png"] }
+imageproc = { version = "0.23.0", default-features = false }
+umath = "0.0.7"
+
+[[bench]]
+harness = false
+name = "affine"
+
+[[bench]]
+harness = false
+name = "resizing"
+
+[[bench]]
+harness = false
+name = "drawing"
