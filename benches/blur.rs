@@ -1,8 +1,39 @@
 #![feature(array_chunks)]
 use fimg::Image;
 use image::RgbImage;
+use opencv::{core::CV_8UC3, prelude::*};
 
 const SIZE: u32 = 1356;
+
+pub fn opencv() {
+    opencv::core::set_num_threads(1).unwrap();
+    let mut data = iai::black_box(include_bytes!("../small_data.imgbuf").to_vec())
+        .array_chunks::<3>()
+        .flat_map(|&[r, g, b]| [b, g, r])
+        .collect::<Vec<_>>();
+    let mut o = unsafe { Mat::new_rows_cols(SIZE as i32, SIZE as i32, CV_8UC3).unwrap() };
+    opencv::imgproc::gaussian_blur_def(
+        &unsafe {
+            Mat::new_size_with_data_def(
+                opencv::core::Size_ {
+                    width: SIZE as i32,
+                    height: SIZE as i32,
+                },
+                CV_8UC3,
+                data.as_mut_ptr() as *mut core::ffi::c_void,
+            )
+            .unwrap()
+        },
+        &mut o,
+        opencv::core::Size_ {
+            width: 0,
+            height: 0,
+        },
+        15.0,
+    )
+    .unwrap();
+    iai::black_box(&o);
+}
 
 pub fn imageproc() {
     iai::black_box(&imageproc::filter::gaussian_blur_f32(
@@ -65,4 +96,4 @@ pub fn fimg() {
     iai::black_box(&i);
 }
 
-iai::main!(blud, imageproc, fimg, image, fastblur);
+iai::main!(blud, imageproc, fimg, image, fastblur, opencv);

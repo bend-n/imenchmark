@@ -7,6 +7,7 @@ including:
 - [blud](https://crates.io/crates/blud)
 - [blurslice](https://crates.io/crates/blurslice)
 - [resize](https://crates.io/crates/resize)
+- [opencv](https://crates.io/crates/opencv)
 
 ![](./affine.svg)
 ![](./resizing.svg)

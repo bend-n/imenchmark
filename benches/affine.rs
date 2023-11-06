@@ -19,8 +19,8 @@ pub fn opencv() -> Mat {
     let mat = unsafe {
         Mat::new_size_with_data_def(
             opencv::core::Size_ {
-                width: 5424,
-                height: 5424,
+                width: SIZE as i32,
+                height: SIZE as i32,
             },
             CV_8UC3,
             data.as_mut_ptr() as *mut core::ffi::c_void,
