@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 blud = "0.0.0"
 blurslice = "0.1.0"
+fastblur = "0.1.1"
 fimg = { version = "0.4.23", features = ["text", "blur", "scale"] }
 iai = { git = "https://github.com/bend-n/iai", version = "0.1.1" }
 image = { version = "0.24.7", default-features = false, features = ["png"] }

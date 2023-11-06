@@ -1,3 +1,4 @@
+#![feature(array_chunks)]
 use fimg::Image;
 use image::RgbImage;
 
@@ -27,6 +28,17 @@ pub fn image() {
     ));
 }
 
+pub fn fastblur() {
+    let mut data = iai::black_box(
+        include_bytes!("../small_data.imgbuf")
+            .array_chunks::<3>()
+            .copied()
+            .collect::<Vec<_>>(),
+    );
+    fastblur::gaussian_blur(&mut data, SIZE as usize, SIZE as usize, 15.0);
+    iai::black_box(&data);
+}
+
 pub fn blurslice() {
     let mut data = iai::black_box(include_bytes!("../small_data.imgbuf").to_vec());
     blurslice::gaussian_blur_bytes::<3>(&mut data, SIZE as usize, SIZE as usize, 15.0).unwrap();
@@ -53,4 +65,4 @@ pub fn fimg() {
     iai::black_box(&i);
 }
 
-iai::main!(blud, imageproc, fimg, image);
+iai::main!(blud, imageproc, fimg, image, fastblur);
