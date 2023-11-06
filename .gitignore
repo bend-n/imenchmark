@@ -3,3 +3,4 @@ data.imgbuf
 *.dat
 *.plot
 Cargo.lock
+small_data.imgbuf
