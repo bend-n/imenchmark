@@ -9,10 +9,12 @@ macro_rules! scale_opencv {
     ($name:ident => { scale($alg:literal) }) => {
         fn $name() {
             opencv::core::set_num_threads(1).unwrap();
-            let mut data = iai::black_box(include_bytes!("../data.imgbuf").to_vec())
-                .array_chunks::<3>()
-                .flat_map(|&[r, g, b]| [b, g, r])
-                .collect::<Vec<_>>();
+            let mut data = iai::black_box(
+                include_bytes!("../data.imgbuf")
+                    .array_chunks::<3>()
+                    .flat_map(|&[r, g, b]| [b, g, r])
+                    .collect::<Vec<_>>(),
+            );
             let mut o = unsafe { Mat::new_rows_cols(SIZE as i32, SIZE as i32, CV_8UC3).unwrap() };
             opencv::imgproc::resize(
                 &unsafe {
@@ -46,9 +48,9 @@ macro_rules! scale_fimg {
         fn $name() {
             #[allow(unused_mut)]
             let mut img = Image::<_, 3>::build(SIZE, SIZE)
-                .buf(iai::black_box(include_bytes!("../data.imgbuf").to_vec()));
+                .buf(&iai::black_box(include_bytes!("../data.imgbuf"))[..]);
             img.scale::<fimg::scale::$alg>(TO, TO);
-            iai::black_box(img);
+            iai::black_box(&img);
         }
     };
 }
@@ -57,7 +59,7 @@ macro_rules! scale_resize {
     ($name:ident => { scale($alg: ident) }) => {
         fn $name() {
             use rgb::FromSlice;
-            let src = iai::black_box(include_bytes!("../data.imgbuf").to_vec());
+            let src = iai::black_box(include_bytes!("../data.imgbuf").as_rgb());
             let mut dst = vec![0; TO as usize * TO as usize * 3];
             resize::new(
                 SIZE as usize,
@@ -68,7 +70,7 @@ macro_rules! scale_resize {
                 resize::Type::$alg,
             )
             .unwrap()
-            .resize(src.as_rgb(), dst.as_rgb_mut())
+            .resize(src, dst.as_rgb_mut())
             .unwrap();
         }
     };
@@ -116,5 +118,5 @@ iai::main!(
     bicubic_fimg,
     bicubic_img,
     bicubic_resize,
-    bicubic_opencv
+    bicubic_opencv,
 );
