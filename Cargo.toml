@@ -16,6 +16,7 @@ imageproc = { version = "0.23.0", default-features = false }
 opencv = "0.86.1"
 resize = { version = "0.8.2", default-features = false, features = ["std"] }
 rgb = "0.8.37"
+stackblur-iter = { version = "0.2.0", features = ["simd"] }
 umath = "0.0.7"
 
 [patch.crates-io]

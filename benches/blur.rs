@@ -87,13 +87,23 @@ pub fn blud() {
 }
 
 pub fn fimg() {
-    let mut i = Image::<_, 3>::build(SIZE, SIZE).buf(iai::black_box(
-        include_bytes!("../small_data.imgbuf")
-            .to_vec()
-            .into_boxed_slice(),
-    ));
-    i.blur(30);
+    let mut i: Image<Box<[u32]>, 1> = Image::<_, 3>::build(SIZE, SIZE)
+        .buf(iai::black_box(&include_bytes!("../small_data.imgbuf")[..]))
+        .into();
+    i.blur_argb(30);
     iai::black_box(&i);
 }
 
-iai::main!(blud, imageproc, fimg, image, fastblur, opencv);
+pub fn stackblur() {
+    let i: Image<Box<[u32]>, 1> = Image::<_, 3>::build(SIZE, SIZE)
+        .buf(iai::black_box(&include_bytes!("../small_data.imgbuf")[..]))
+        .into();
+    let mut i = i.take_buffer().to_vec();
+    stackblur_iter::simd_blur_argb::<8>(
+        &mut stackblur_iter::imgref::ImgRefMut::new(&mut i, SIZE as usize, SIZE as usize),
+        30,
+    );
+    iai::black_box(&i);
+}
+
+iai::main!(blud, imageproc, fimg, image, fastblur, opencv, stackblur);
